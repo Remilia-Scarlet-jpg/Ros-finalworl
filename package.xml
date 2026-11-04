@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>spark_deliver</name>
+  <version>1.0.0</version>
+  <description>
+    Spark 送物小车功能包。
+    选一个地点，机器人把东西送过去；到点语音提示并自动拍照留档，确认取走后自己返回出发点。
+    另含“巡一圈拍照存档”模式，可单独当拍照记录工具用。
+    只调用已有导航栈（map_server / amcl / move_base）与相机驱动，不修改任何其他功能包。
+  </description>
+
+  <maintainer email="spark@todo.todo">spark</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>actionlib</depend>
+  <depend>move_base_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>tf</depend>
+  <depend>tf2_ros</depend>
+
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>map_server</exec_depend>
+  <exec_depend>amcl</exec_depend>
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>spark_bringup</exec_depend>
+  <exec_depend>spark_navigation</exec_depend>
+  <exec_depend>lidar_driver_transfer</exec_depend>
+  <exec_depend>camera_driver_transfer</exec_depend>
+
+  <export>
+  </export>
+</package>

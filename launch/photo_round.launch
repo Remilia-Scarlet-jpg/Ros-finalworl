@@ -1,0 +1,20 @@
+<!--
+  巡拍模式：按 places.yaml 里带 photo 的地点走一圈，每个点拍一张，回出发点。
+
+  用法：
+    roslaunch spark_deliver photo_round.launch
+-->
+<launch>
+  <arg name="places_file" default="$(find spark_deliver)/config/places.yaml"/>
+  <arg name="camera_type" default="d435"/>
+  <arg name="lidar_type" default="ydlidar_g6"/>
+  <arg name="open_rviz" default="true"/>
+
+  <include file="$(find spark_deliver)/launch/deliver.launch">
+    <arg name="places_file" value="$(arg places_file)"/>
+    <arg name="camera_type" value="$(arg camera_type)"/>
+    <arg name="lidar_type" value="$(arg lidar_type)"/>
+    <arg name="open_rviz" value="$(arg open_rviz)"/>
+    <arg name="task" value="photo_round"/>
+  </include>
+</launch>

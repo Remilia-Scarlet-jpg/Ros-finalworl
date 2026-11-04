@@ -1,0 +1,24 @@
+# ============================================================
+# 拍照存档参数（photo_node.py）
+# ============================================================
+
+# 彩色图话题：d435 用 /camera/color/image_raw，astra/astrapro 用 /camera/rgb/image_raw
+image_topic: /camera/color/image_raw
+
+# 照片保存根目录（会按日期建子目录）
+save_dir: ~/.spark_deliver/photos
+
+# JPEG 质量
+jpeg_quality: 88
+
+# 等一帧新图的最长时间（秒）
+frame_timeout: 5.0
+
+# 缩略图宽度（像素），用于生成网页索引
+thumb_width: 320
+
+# 拍完是否自动重建 index.html
+report_enable: true
+
+# 网页标题
+report_title: 送物拍照记录

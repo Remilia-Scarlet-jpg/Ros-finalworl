@@ -1,0 +1,45 @@
+# ============================================================
+# 地点表 —— 送物小车的导航点（手动标定）
+#
+# 用 place_manager.py 管理，也可以手工编辑：
+#   rosrun spark_deliver place_manager.py          # 交互菜单：增 / 删 / 改 / 查
+#   rosrun spark_deliver place_manager.py list     # 只看
+#
+# 坐标从哪来：
+#   1) 机器人开到位后，用 RViz 看 /amcl_pose 的 x y，抄下来
+#   2) 或者直接 place_manager.py here 地点名，自动读当前位姿
+#
+# 字段：
+#   x, y     地图坐标系 map 下的位置，单位米
+#   yaw      到达后的朝向，单位弧度（0 = 朝 +x，1.571 = 朝 +y，3.142 = 朝 -x）
+#            place_manager 命令行里用「度」，写文件时自动换弧度
+#   actions  到点做什么：deliver = 可送物，photo = 到点拍照
+# ============================================================
+
+frame_id: map
+
+# 出发点：每次送完东西回到这里
+home:
+  name: 出发点
+  x: 4.408
+  y: -1.262
+  yaw: 1.381
+
+places:
+  - name: 航点1
+    x: 4.338
+    y: -0.216
+    yaw: 1.728
+    actions: [deliver, photo]
+
+  - name: 航点2
+    x: 4.218
+    y: 0.612
+    yaw: 1.719
+    actions: [deliver, photo]
+
+  - name: 航点3
+    x: 4.115
+    y: 1.412
+    yaw: 1.711
+    actions: [deliver, photo]

@@ -1,0 +1,38 @@
+# ============================================================
+# 送物主流程参数（deliver_node.py）
+# 这些参数在 deliver_nodes.launch 里加载到 /deliver 命名空间下
+# ============================================================
+
+# 地点表路径；launch 里会覆盖成 $(find spark_deliver)/config/places.yaml
+places_file: ""
+
+# 任务类型：deliver = 送物；photo_round = 依次去拍照点拍一圈
+task: deliver
+
+# 单段导航超时（秒）。场地大就调大
+goal_timeout: 120.0
+
+# 导航失败重试次数（0 = 不重试）
+max_retries: 1
+
+# 到点后等待取件的秒数；0 表示一直等，直到有人按确认
+wait_pickup_timeout: 60.0
+
+# 送完后是否回出发点
+return_home: true
+
+# 到点是否拍照留档（地点 actions 里也要有 photo 才会拍）
+photo_on_arrive: true
+
+# 到点后停一下再播报，给拍照和相机曝光留时间
+arrive_pause: 1.5
+
+# 语音播报
+tts_enable: true
+tts_topic: /voice/tts
+
+# 地图坐标系
+frame_id: map
+
+# 等待 move_base 上线的超时（秒）
+server_wait: 30.0

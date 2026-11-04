@@ -1,0 +1,29 @@
+<!--
+  只启动送物业务节点（导航栈已经在别处跑起来时用）
+
+  用法：
+    roslaunch spark_deliver deliver_nodes.launch
+    roslaunch spark_deliver deliver_nodes.launch places_file:=$(find spark_deliver)/config/places.yaml
+-->
+<launch>
+  <arg name="places_file" default="$(find spark_deliver)/config/places.yaml"/>
+  <arg name="task" default="deliver"/>
+  <arg name="image_topic" default="/camera/color/image_raw"/>
+  <arg name="wait_pickup_timeout" default="60.0"/>
+  <arg name="tts_enable" default="true"/>
+  <arg name="publish_initial_pose" default="false"/>
+
+  <node pkg="spark_deliver" type="deliver_node.py" name="deliver" output="screen">
+    <rosparam file="$(find spark_deliver)/config/deliver.yaml" command="load"/>
+    <param name="places_file" value="$(arg places_file)"/>
+    <param name="task" value="$(arg task)"/>
+    <param name="wait_pickup_timeout" value="$(arg wait_pickup_timeout)"/>
+    <param name="tts_enable" value="$(arg tts_enable)"/>
+    <param name="publish_initial_pose" value="$(arg publish_initial_pose)"/>
+  </node>
+
+  <node pkg="spark_deliver" type="photo_node.py" name="photo" output="screen">
+    <rosparam file="$(find spark_deliver)/config/photo.yaml" command="load"/>
+    <param name="image_topic" value="$(arg image_topic)"/>
+  </node>
+</launch>

@@ -1,0 +1,80 @@
+<!--
+  送物小车一键启动：底盘 + 相机 + 雷达 + 地图 + 定位 + 导航 + 送物业务节点
+
+  用法：
+    roslaunch spark_deliver deliver.launch
+    roslaunch spark_deliver deliver.launch camera_type:=astrapro
+    roslaunch spark_deliver deliver.launch start_bringup:=false   # 驱动和导航已单独跑过
+    roslaunch spark_deliver deliver.launch task:=photo_round      # 只巡一圈拍照
+    roslaunch spark_deliver deliver.launch start_deliver:=false   # 只起导航，用于示教授点
+-->
+<launch>
+  <!-- 地点表：先用 place_manager.py 标好导航点（config/places.yaml） -->
+  <arg name="places_file" default="$(find spark_deliver)/config/places.yaml"/>
+  <arg name="map_file" default="$(find final_project)/map/room201.yaml"/>
+
+  <!-- 硬件型号 -->
+  <arg name="lidar_type" default="ydlidar_g6" doc="ydlidar_g6 / ydlidar_g2 / 3iroboticslidar2"/>
+  <arg name="camera_type" default="d435" doc="d435 / astra / astrapro"/>
+  <arg name="image_topic"
+       default="$(eval '/camera/rgb/image_raw' if arg('camera_type') in ['astra', 'astrapro'] else '/camera/color/image_raw')"/>
+
+  <!-- 启动开关 -->
+  <arg name="start_bringup" default="true"/>
+  <arg name="start_lidar" default="true"/>
+  <arg name="start_tts" default="true"/>
+  <arg name="start_deliver" default="true"
+       doc="示教／录点时设 false：只起地图+定位+导航，不起送物节点"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="task" default="deliver" doc="deliver / photo_round"/>
+  <arg name="wait_pickup_timeout" default="60.0"/>
+  <arg name="publish_initial_pose" default="true"
+       doc="把 places.yaml 里的出发点点位当作 AMCL 初始位姿，省得每次手动点 2D Pose Estimate"/>
+  <arg name="rviz_config" default="$(find spark_deliver)/rviz/deliver.rviz"/>
+
+  <!-- 底盘、相机、机器人描述 -->
+  <group if="$(arg start_bringup)">
+    <include file="$(find spark_bringup)/launch/driver_bringup.launch">
+      <arg name="camera_type_tel" value="$(arg camera_type)"/>
+      <arg name="lidar_type_tel" value="$(arg lidar_type)"/>
+      <arg name="start_camera" value="true"/>
+      <arg name="start_base" value="true"/>
+      <arg name="enable_arm_tel" value="false"/>
+    </include>
+  </group>
+
+  <!-- 雷达驱动 -->
+  <group if="$(arg start_lidar)">
+    <include file="$(find lidar_driver_transfer)/launch/$(arg lidar_type).launch"/>
+  </group>
+
+  <!-- 地图 -->
+  <node pkg="map_server" type="map_server" name="map_server"
+        args="$(arg map_file)" output="screen"/>
+
+  <!-- AMCL 定位 -->
+  <include file="$(find final_project)/launch/amcl.launch"/>
+
+  <!-- move_base 路径规划（沿用 spark_navigation 的参数） -->
+  <include file="$(find final_project)/launch/move_base.launch"/>
+
+  <!-- 语音播报 -->
+  <group if="$(arg start_tts)">
+    <node pkg="spark_deliver" type="tts_bridge.py" name="tts_bridge" output="screen"/>
+  </group>
+
+  <!-- 送物 + 拍照 -->
+  <group if="$(arg start_deliver)">
+    <include file="$(find spark_deliver)/launch/deliver_nodes.launch">
+      <arg name="places_file" value="$(arg places_file)"/>
+      <arg name="task" value="$(arg task)"/>
+      <arg name="image_topic" value="$(arg image_topic)"/>
+      <arg name="wait_pickup_timeout" value="$(arg wait_pickup_timeout)"/>
+      <arg name="publish_initial_pose" value="$(arg publish_initial_pose)"/>
+    </include>
+  </group>
+
+  <group if="$(arg open_rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config)"/>
+  </group>
+</launch>
